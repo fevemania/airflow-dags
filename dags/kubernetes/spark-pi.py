@@ -50,7 +50,7 @@ with DAG(
         namespace='spark-apps',
         application_file='spark-pi.yaml',
         kubernetes_conn_id='kubernetes_default',
-        do_xcom_push=True,
+        do_xcom_push=True
     )
 
     pod_task_xcom_result = BashOperator(

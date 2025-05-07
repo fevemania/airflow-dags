@@ -34,6 +34,20 @@ spec:
     cores: 1
     memory: 512m
     serviceAccount: spark
+    sidecars:
+      - name: airflow-xcom-sidecar
+        image: alpine
+        command: ["sh", "-c", 'trap "exit 0" INT; while true; do sleep 1; done;']
+        volumeMounts:
+          - name: xcom
+            mountPath: /airflow/xcom
+        resources:
+          requests:
+            cpu: "1m"
+            memory: "10Mi"
+    volumeMounts:
+      - name: xcom
+        mountPath: /airflow/xcom
   executor:
     labels:
       version: 3.5.0
