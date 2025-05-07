@@ -50,12 +50,11 @@ with DAG(
         namespace='spark-apps',
         application_file='spark-pi.yaml',
         kubernetes_conn_id='kubernetes_default',
-        name='spark-pi',
         do_xcom_push=True
     )
 
     pod_task_xcom_result = BashOperator(
-        bash_command="echo \"{{ task_instance.xcom_pull('spark-pi')[0] }}\"",
+        bash_command="echo \"{{ task_instance.xcom_pull('spark_transform_data') }}\"",
         task_id="pod_task_xcom_result",
     )
 
