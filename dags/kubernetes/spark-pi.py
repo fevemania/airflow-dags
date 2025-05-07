@@ -37,23 +37,17 @@ default_args = {
 # [END default_args]
 
 # [START instantiate_dag]
-
-dag = DAG(
-    'spark_pi',
-    start_date=days_ago(1),
-    default_args=default_args,
-    schedule_interval=timedelta(days=1),
-    tags=['example']
-)
-
-submit = SparkKubernetesOperator(
-    task_id='spark_transform_data',
-    namespace='spark-apps',
-    application_file='/kubernetes/spark-pi.yaml',
-    kubernetes_conn_id='kubernetes_default',
-    do_xcom_push=True,
-)
-
-
-
-submit
+with DAG(
+        'spark_pi',
+        start_date=days_ago(1),
+        default_args=default_args,
+        schedule_interval=timedelta(days=1),
+        tags=['example']
+) as dag:
+    submit = SparkKubernetesOperator(
+        task_id='spark_transform_data',
+        namespace='spark-apps',
+        application_file='/kubernetes/spark-pi.yaml',
+        kubernetes_conn_id='kubernetes_default',
+        do_xcom_push=True,
+    )
