@@ -17,6 +17,7 @@ from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.spark_kubernetes import SparkKubernetesOperator
 from airflow.providers.cncf.kubernetes.sensors.spark_kubernetes import SparkKubernetesSensor
 from airflow.providers.cncf.kubernetes.hooks.kubernetes import KubernetesHook
+from airflow.operators.bash import BashOperator
 from airflow.utils.dates import days_ago
 k8s_hook = KubernetesHook(conn_id='kubernetes_config')
 # [END import_module]
@@ -51,3 +52,10 @@ with DAG(
         kubernetes_conn_id='kubernetes_default',
         do_xcom_push=True,
     )
+
+    pod_task_xcom_result = BashOperator(
+        bash_command="echo \"{{ task_instance.xcom_pull('write-xcom')[0] }}\"",
+        task_id="pod_task_xcom_result",
+    )
+
+    submit >> pod_task_xcom_result
